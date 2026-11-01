@@ -59,6 +59,45 @@ hermes gateway restart
 Toolset `stackexchange` is auto-enabled once the plugin loads; the bundled
 skill is loaded with `skill_view("stackexchange:stackexchange-reference")`.
 
+## Making the bundled skill visible in the prompt
+
+Registers as `stackexchange:stackexchange-reference`: reachable through
+`skill_view()` and listed by `skills_list`, but plugin skills are deliberately
+kept out of the system prompt's `<available_skills>`. The model therefore never
+sees it unless something tells it to look. The four tool schemas are already in
+the prompt, so basic use works regardless — what the skill adds is the *search
+strategy* (stripping machine-specific noise before searching, `tagged` over free
+text, question score vs `accepted`, comments carrying corrections, backoff and
+quota handling).
+
+Copy it into the skills tree to have it listed in every session:
+
+```bash
+mkdir -p ~/.hermes/skills/software-development/stackexchange-reference
+cp ~/.hermes/plugins/stackexchange/skills/stackexchange-reference/SKILL.md \
+   ~/.hermes/skills/software-development/stackexchange-reference/
+```
+
+Each profile has its own skill tree, so repeat per profile when the plugin is
+enabled there:
+
+```bash
+mkdir -p ~/.hermes/profiles/<name>/skills/software-development/stackexchange-reference
+cp ~/.hermes/plugins/stackexchange/skills/stackexchange-reference/SKILL.md \
+   ~/.hermes/profiles/<name>/skills/software-development/stackexchange-reference/
+```
+
+The copy is a snapshot: re-copy after editing the plugin's `SKILL.md`, otherwise
+the prompt keeps serving the old text. A symlink to the *directory* does not
+work — `Path.rglob("SKILL.md")` does not descend through directory symlinks — but
+symlinking the `SKILL.md` *file* inside a real directory is picked up and avoids
+the drift:
+
+```bash
+ln -sf ~/.hermes/plugins/stackexchange/skills/stackexchange-reference/SKILL.md \
+       ~/.hermes/skills/software-development/stackexchange-reference/SKILL.md
+```
+
 ## Tests
 
 ```bash
