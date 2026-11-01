@@ -1,0 +1,9 @@
+name: stackexchange
+version: 1.0.0
+description: "Read-only Stack Exchange API v2.3 tools (Stack Overflow and the wider network): search questions/excerpts, fetch a question with its top answers and comments, find similar questions, list network sites. Uses an app key for the 10k/day quota, caches identical requests for 60s, and honours API backoff."
+author: idoom
+provides_tools:
+  - se_search
+  - se_question
+  - se_similar
+  - se_sites
